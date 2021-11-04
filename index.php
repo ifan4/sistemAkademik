@@ -19,7 +19,7 @@
         <div class="row justify-content-center">
             <div class="col-8">
                 <h1 class="text-white mt-5">Sistem Akademik</h1>
-                <div class="bg-white rounded-3 p-4 px-5 shadow">
+                <div class="bg-white rounded-3 p-5 shadow">
                     <h2 class="text-center mb-3">Selamat datang di Sistem Akademik</h2>
                     <p class="mb-4">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit totam quod consectetur dolore libero obcaecati nam a quidem earum magnam minus molestias beatae perspiciatis velit et necessitatibus, voluptatibus in odio exercitationem. Eligendi quasi voluptatum voluptates blanditiis suscipit, illo exercitationem quam veniam adipisci dicta enim rem non dolores delectus cupiditate sit! Accusantium repellat ab voluptatem illum expedita autem quibusdam? Maxime vitae doloremque aliquid quaerat iure deserunt, atque voluptas voluptatum dolorum. Maiores animi dolorum sunt quos debitis similique, sapiente minima itaque illo tempore. Cumque repellat quasi quas iusto ipsum, sequi rem fugiat dolores fugit, praesentium quis vero aspernatur quisquam delectus repellendus non?</p>
                     <div class="text-center">
