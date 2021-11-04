@@ -1,0 +1,29 @@
+body {
+  background-color: #F4F8F9;
+}
+
+.bg-dark-mhs {
+  background-color: #1D2939;
+}
+.bg-dark-dosen {
+  background-color: #363740;
+}
+.bg-dark-admin{
+  background-color: #003FB9;
+}
+
+.bg-dark-mhs {
+  background-color: #1D2939;
+}
+.bg-dark-dosen {
+  background-color: #363740;
+}
+.bg-dark-admin{
+  background-color: #003FB9;
+}
+.bg-special-green {
+  background-color: #00626B !important;
+}
+.notif {
+  width: 300px;
+}
