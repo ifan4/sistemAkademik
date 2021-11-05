@@ -48,8 +48,10 @@
                 </h5>
 
                 <h6 class="bg-danger rounded-3 p-2">
-                    <i class="ms-2 bi bi-box-arrow-left"></i>
-                    Log Out
+                    <a href="#" class="text-decoration-none link-light">
+                        <i class="me-2 bi bi-box-arrow-left"></i>
+                        Log Out
+                    </a>
                 </h6>
             </div>
 
@@ -75,19 +77,35 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>Tugas integrating API midtrans</td>
+                                    <td>
+                                        <a href="list-tugas-mhs.php?namaTugas=integrating API midtrans" class="text-decoration-none">
+                                            Tugas integrating API midtrans
+                                        </a>
+                                    </td>
                                     <td>Promnet</td>
                                 </tr>
                                 <tr>
-                                    <td>Tugas integrating API midtrans</td>
+                                    <td>
+                                        <a href="#" class="text-decoration-none">
+                                            Tugas integrating API midtrans
+                                        </a>
+                                    </td>
                                     <td>Promnet</td>
                                 </tr>
                                 <tr>
-                                    <td>Tugas integrating API midtrans</td>
+                                    <td>
+                                        <a href="#" class="text-decoration-none">
+                                            Tugas integrating API midtrans
+                                        </a>
+                                    </td>
                                     <td>Promnet</td>
                                 </tr>
                                 <tr>
-                                    <td>Tugas integrating API midtrans</td>
+                                    <td>
+                                        <a href="#" class="text-decoration-none">
+                                            Tugas integrating API midtrans
+                                        </a>
+                                    </td>
                                     <td>Promnet</td>
                                 </tr>
                             </tbody>

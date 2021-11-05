@@ -122,8 +122,10 @@
                     </div>
                 </h5>
                 <h6 class="bg-danger rounded-3 p-2">
-                    <i class="ms-2 bi bi-box-arrow-left"></i>
-                    Log Out
+                    <a href="#" class="text-decoration-none link-light">
+                        <i class="me-2 bi bi-box-arrow-left"></i>
+                        Log Out
+                    </a>
                 </h6>
             </div>
 

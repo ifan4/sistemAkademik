@@ -122,8 +122,10 @@
                     </div>
                 </h5>
                 <h6 class="bg-danger rounded-3 p-2">
-                    <i class="ms-2 bi bi-box-arrow-left"></i>
-                    Log Out
+                    <a href="#" class="text-decoration-none link-light">
+                        <i class="me-2 bi bi-box-arrow-left"></i>
+                        Log Out
+                    </a>
                 </h6>
             </div>
 
@@ -133,12 +135,10 @@
                         <h4><?= $_GET["namaMK"] ?></h4>
                     </div>
                     <div class="col-12 bg-primary text-white g-0 bg-dark py-4 px-3">
-                        <a href="#" class="text-decoration-none">
-                            <h6 class="text-white">
-                                Tugas:
-                                Development css e-commerce
-                            </h6>
-                        </a>
+                        <h6 class="text-white">
+                            Tugas:
+                            Development css e-commerce
+                        </h6>
                     </div>
                     <div class="col-12 bg-white p-4">
                         <table class="table table-striped">
