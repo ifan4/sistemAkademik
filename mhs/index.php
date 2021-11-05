@@ -19,7 +19,7 @@
     <div class="container-fluid row g-0">
         <!-- SIDEBAR SECTION -->
         <div class="col-2">
-            <nav class="nav flex-column bg-dark-mhs" style="height: 800px; " id="sidebar-dashboard">
+            <nav class="nav flex-column bg-dark-mhs" style="height: 800px; font-size: 13px;" id="sidebar-dashboard">
                 <h3 class="text-center text-white my-3">Sistem Akademik</h3>
                 <hr class="border">
 
@@ -123,8 +123,10 @@
                 </h5>
 
                 <h6 class="bg-danger rounded-3 p-2">
-                    <i class="ms-2 bi bi-box-arrow-left"></i>
-                    Log Out
+                    <a href="#" class="text-decoration-none link-light">
+                        <i class="me-2 bi bi-box-arrow-left"></i>
+                        Log Out
+                    </a>
                 </h6>
             </div>
 
