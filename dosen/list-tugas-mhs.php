@@ -69,43 +69,25 @@
                         <table class="table">
                             <thead>
                                 <tr>
+                                    <th scope="col">No</th>
+                                    <th scope="col">Nama</th>
+                                    <th scope="col">NIM</th>
                                     <th scope="col">Judul</th>
-                                    <th scope="col">Mata Kuliah</th>
+                                    <th scope="col">File</th>
+                                    <th scope="col">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
+                                    <td>1</td>
+                                    <td>Nadia</td>
+                                    <td>1905044</td>
+                                    <td>Development Style E-commerce</td>
+                                    <td>initugas.pdf</td>
                                     <td>
-                                        <a href="list-tugas-mhs.php?namaTugas=integrating API midtrans" class="text-decoration-none">
-                                            Tugas integrating API midtrans
-                                        </a>
+                                        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modal-beri-nilai">Beri Nilai</button>
                                     </td>
-                                    <td>Promnet</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <a href="#" class="text-decoration-none">
-                                            Tugas integrating API midtrans
-                                        </a>
-                                    </td>
-                                    <td>Promnet</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <a href="#" class="text-decoration-none">
-                                            Tugas integrating API midtrans
-                                        </a>
-                                    </td>
-                                    <td>Promnet</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <a href="#" class="text-decoration-none">
-                                            Tugas integrating API midtrans
-                                        </a>
-                                    </td>
-                                    <td>Promnet</td>
-                                </tr>
+
                             </tbody>
                         </table>
 
@@ -115,12 +97,12 @@
             <!--END OF List Tugas-->
 
             <!-- Modal Tambah Tugas -->
-            <div class="modal fade" id="modal-tambah-tugas" tabindex="-1" aria-labelledby="modal-tambah-tugas" aria-hidden="true">
+            <div class="modal fade" id="modal-beri-nilai" tabindex="-1" aria-labelledby="modal-beri-nilai" aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-body py-4">
                             <div class="d-flex justify-content-between">
-                                <h5 class="modal-title" id="exampleModalLabel">Tambah Tugas</h5>
+                                <h5 class="modal-title" id="exampleModalLabel">Beri Nilai</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <hr class="mt-2">
@@ -128,20 +110,37 @@
                                 <div class="container-fluid px-0 mb-5">
                                     <div class="row">
                                         <div class="mb-3">
-                                            <label for="nim" class="form-label">Judul</label>
-                                            <input required type="text" class="form-control" id="nim" name="nim">
+                                            <label for="nama" class="form-label">Nama</label>
+                                            <input required type="text" class="form-control" id="nama" name="nama" value="Nadia" disabled>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="jurusan" class="form-label">Deskripsi</label>
-                                            <textarea class="form-control" name="deskripsi" id="" cols="30" rows="5"></textarea>
+                                            <label for="nim" class="form-label">NIM</label>
+                                            <input required type="text" class="form-control" id="nim" name="nim" value="1905044" disabled>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="angkatan" class="form-label">File Tugas</label>
-                                            <input required type="file" class="form-control" id="inputFile" name="inputFile">
+                                            <label for="judul" class="form-label">Judul</label>
+                                            <input required type="text" class="form-control" id="judul" name="judul" value="judul" disabled>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">File Hasil</label>
+                                            <a href="#" class="btn btn-primary d-block"> initugas.pdf </a>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="nilai" class="form-label">Nilai</label>
+                                            <select name="nilai" id="nilai" class="form-select">
+                                                <option value="">A</option>
+                                                <option value="">A-</option>
+                                                <option value="">B+</option>
+                                                <option value="">B</option>
+                                                <option value="">B-</option>
+                                                <option value="">C</option>
+                                                <option value="">D</option>
+                                                <option value="">E</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
-                                <button type="submit" class="btn btn-outline-dark mx-auto px-lg-3 mt-5" name="submit-mhs">Tambah</button>
+                                <button type="submit" class="btn btn-outline-dark mx-auto px-lg-3 mt-5 w-100" name="submit-nilai">submit</button>
                             </form>
                         </div>
 
