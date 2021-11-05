@@ -29,7 +29,7 @@
                         <span class="ms-3 text-sidebar" aria-current="page">Home</span>
                     </div>
                 </a>
-                <a href="#" class="text-decoration-none btn-outline-secondary bg-secondary">
+                <a href="input-tugas.php" class="text-decoration-none btn-outline-secondary bg-secondary">
                     <div class="d-flex align-items-center px-4 py-3 text-white">
                         <i class="bi bi-card-heading"></i>
                         <span class="ms-3 text-sidebar" aria-current="page">Input Tugas</span>
@@ -59,13 +59,9 @@
             <section class="py-4 bg-light">
                 <div class="container col-10 mb-3">
                     <div class="kotak bg-white p-4">
-                        <div class="header d-flex flex-row justify-content-between">
-                            <h4>List Tugas</h4>
-                            <a href="#" class="btn btn-outline-secondary btn-dark text-white" data-bs-toggle="modal" data-bs-target="#modal-tambah-tugas">
-                                <i class="bi bi-pencil me-1"></i>
-                                Input Tugas
-                            </a>
-                        </div>
+
+                        <h4>List Tugas Mahasiswa</h4>
+
                         <hr>
 
                         <table class="table">
@@ -100,7 +96,7 @@
 
             <!-- Modal Tambah Tugas -->
             <div class="modal fade" id="modal-beri-nilai" tabindex="-1" aria-labelledby="modal-beri-nilai" aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-body py-4">
                             <div class="d-flex justify-content-between">
@@ -109,7 +105,7 @@
                             </div>
                             <hr class="mt-2">
                             <form action="" method="POST">
-                                <div class="container-fluid px-0 mb-5">
+                                <div class="container-fluid px-0">
                                     <div class="row">
                                         <div class="mb-3">
                                             <label for="nama" class="form-label">Nama</label>
@@ -140,9 +136,13 @@
                                                 <option value="">E</option>
                                             </select>
                                         </div>
+                                        <div class="mb-3">
+                                            <label for="judul" class="form-label">Status</label>
+                                            <input required type="text" class="form-control" id="status" name="status" value="belum dinilai" disabled>
+                                        </div>
+                                        <button type="submit" class="btn btn-outline-success px-lg-3 w-100 mt-4" name="submit-nilai">submit</button>
                                     </div>
                                 </div>
-                                <button type="submit" class="btn btn-outline-dark mx-auto px-lg-3 mt-5 w-100" name="submit-nilai">submit</button>
                             </form>
                         </div>
 
