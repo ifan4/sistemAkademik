@@ -1,3 +1,11 @@
+<?php
+
+require "../koneksi.php";
+$ambil_tb_mk = mysqli_query($koneksi, "SELECT * FROM matakuliah, dosen WHERE matakuliah.idDosen = dosen.idDosen ORDER BY matakuliah.idMK asc");
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -95,6 +103,7 @@
         <!-- END OF SIDEBAR SECTION -->
 
         <div class="col-10 g-0">
+            <!-- header -->
             <div class="d-flex justify-content-between align-items-center py-3 pt-4 px-5 text-white" style="background-color: #1d2939ee;">
                 <h5>
                     <i class="bi bi-book-half me-2"></i>
@@ -129,6 +138,7 @@
                     </a>
                 </h6>
             </div>
+            <!-- end of header -->
 
             <div class="container text-secondary">
                 <div class="row p-4 px-5">
@@ -145,24 +155,18 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <th scope="row">1</th>
-                                    <td><a href="list-tugas.php?namaMK=Rekayasa Perangkat Lunak" class="text-decoration-none">Rekayasa Perangkat Lunak</a></td>
-                                    <td>3</td>
-                                    <td>lorem</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">2</th>
-                                    <td><a href="list-tugas.php?namaMK=Arsitektur Enterprise" class="text-decoration-none">Arsitektur Enterprise</a></td>
-                                    <td>3</td>
-                                    <td>lorem</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">3</th>
-                                    <td><a href="#" class="text-decoration-none">Metodologi Penelitian</a></td>
-                                    <td>3</td>
-                                    <td>lorem</td>
-                                </tr>
+                                <!-- LOOPING DATA FROM DB -->
+                                <?php
+                                $nomor = 1;
+                                while ($dataMK = mysqli_fetch_assoc($ambil_tb_mk)) : ?>
+                                    <tr>
+                                        <th scope="row"><?= $nomor++ ?></th>
+                                        <td><a href="list-tugas.php?namaMK=<?= $dataMK["namaMK"] ?>&idMK=<?= $dataMK["idMK"] ?>" class="text-decoration-none"><?= $dataMK["namaMK"] ?></a></td>
+                                        <td><?= $dataMK["sks"] ?></td>
+                                        <td><?= $dataMK["namaDosen"] ?></td>
+                                    </tr>
+                                <?php endwhile ?>
+                                <!-- END OF LOOPING DATA FROM DB -->
                             </tbody>
                         </table>
                     </div>

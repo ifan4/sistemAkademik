@@ -1,3 +1,13 @@
+<?php
+require "../koneksi.php";
+
+$idMK = $_GET["idMK"];
+
+
+$ambil_tb_tugas = mysqli_query($koneksi, "SELECT * FROM tugas, matakuliah WHERE tugas.idMK = matakuliah.idMK and tugas.idMK = $idMK");
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -95,6 +105,7 @@
         <!-- END OF SIDEBAR SECTION -->
 
         <div class="col-10 g-0">
+            <!-- header -->
             <div class="d-flex justify-content-between align-items-center py-3 pt-4 px-5 text-white" style="background-color: #1d2939ee;">
                 <h5>
                     <i class="bi bi-book-half me-2"></i>
@@ -128,52 +139,27 @@
                     </a>
                 </h6>
             </div>
+            <!-- end of header -->
 
             <div class="container text-secondary">
+                <div>
+
+                </div>
                 <div class="row p-4 px-5">
                     <div class="col-12 bg-primary text-white rounded-3 p-4 shadow-sm mb-3">
                         <h4><?= $_GET["namaMK"] ?></h4>
                     </div>
-                    <div class="col-12 bg-primary text-white rounded-3 p-4 shadow-sm mt-1">
-                        <a href="tugas.php?namaMK=<?= $_GET["namaMK"] ?>" class="text-decoration-none">
-                            <h6 class="text-white">
-                                Tugas:
-                                Development css e-commerce
-                            </h6>
-                        </a>
-                    </div>
-                    <div class="col-12 bg-primary text-white rounded-3 p-4 shadow-sm mt-1">
-                        <a href="#" class="text-decoration-none">
-                            <h6 class="text-white">
-                                Tugas:
-                                Development css e-commerce
-                            </h6>
-                        </a>
-                    </div>
-                    <div class="col-12 bg-primary text-white rounded-3 p-4 shadow-sm mt-1">
-                        <a href="#" class="text-decoration-none">
-                            <h6 class="text-white">
-                                Tugas:
-                                Development css e-commerce
-                            </h6>
-                        </a>
-                    </div>
-                    <div class="col-12 bg-primary text-white rounded-3 p-4 shadow-sm mt-1">
-                        <a href="#" class="text-decoration-none">
-                            <h6 class="text-white">
-                                Tugas:
-                                Development css e-commerce
-                            </h6>
-                        </a>
-                    </div>
-                    <div class="col-12 bg-primary text-white rounded-3 p-4 shadow-sm mt-1">
-                        <a href="#" class="text-decoration-none">
-                            <h6 class="text-white">
-                                Tugas:
-                                Development css e-commerce
-                            </h6>
-                        </a>
-                    </div>
+
+                    <?php while ($dataTugas = mysqli_fetch_assoc($ambil_tb_tugas)) : ?>
+                        <div class="col-12 bg-primary text-white rounded-3 p-4 shadow-sm mt-1">
+                            <a href="tugas.php?namaMK=<?= $_GET["namaMK"] ?>&idTugas=<?= $dataTugas["idTugas"] ?>" class="text-decoration-none">
+                                <h6 class="text-white">
+                                    Tugas:
+                                    <?= $dataTugas["judul"] ?>
+                                </h6>
+                            </a>
+                        </div>
+                    <?php endwhile ?>
                 </div>
             </div>
 

@@ -1,3 +1,37 @@
+<?php
+require "../koneksi.php";
+session_start();
+
+$_SESSION["dataDosen"]["idDosen"] = 2;
+$idDosen = $_SESSION["dataDosen"]["idDosen"];
+
+//ambil data tabel mata kuliah yang diampu oleh dosen ini
+$ambil_tb_mk = mysqli_query($koneksi, "SELECT * FROM matakuliah WHERE idDosen = $idDosen");
+
+//ambil data tabel tugas yang dibuat oleh dosen ini
+$ambil_tabel_tugas = mysqli_query($koneksi, "SELECT * FROM tugas, mataKuliah WHERE tugas.idMK = mataKuliah.idMK and matakuliah.idDosen = $idDosen");
+
+if (isset($_POST["tambah-file"])) {
+    $idMK = $_POST["mk"];
+    $judul = $_POST["judul"];
+    $deskripsi = $_POST["deskripsi"];
+    $namaFile = $_FILES["inputFile"]["name"];
+    move_uploaded_file($_FILES["inputFile"]["tmp_name"], "files/" . $namaFile);
+    mysqli_query($koneksi, "INSERT INTO tugas VALUES('', $idMK, '$judul', '$deskripsi', '$namaFile')");
+
+    if (mysqli_affected_rows($koneksi) > 0) {
+        echo "<script>
+                alert('Tugas Berhasil Ditambahkan!');
+            </script>
+        ";
+    }
+}
+
+
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -41,6 +75,7 @@
         <!-- END OF SIDEBAR SECTION -->
 
         <div class="col-10 g-0">
+            <!-- header -->
             <div class="d-flex justify-content-between align-items-center py-3 pt-4 px-5 text-white" style="background-color: #363740e8;">
                 <h5>
                     <i class="bi bi-card-heading me-2"></i>
@@ -54,6 +89,7 @@
                     </a>
                 </h6>
             </div>
+            <!-- end of header -->
 
             <!--LIST TUGAS-->
             <section class="py-4 bg-light">
@@ -76,38 +112,16 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>
-                                        <a href="list-tugas-mhs.php?namaTugas=integrating API midtrans" class="text-decoration-none">
-                                            Tugas integrating API midtrans
-                                        </a>
-                                    </td>
-                                    <td>Promnet</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <a href="#" class="text-decoration-none">
-                                            Tugas integrating API midtrans
-                                        </a>
-                                    </td>
-                                    <td>Promnet</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <a href="#" class="text-decoration-none">
-                                            Tugas integrating API midtrans
-                                        </a>
-                                    </td>
-                                    <td>Promnet</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <a href="#" class="text-decoration-none">
-                                            Tugas integrating API midtrans
-                                        </a>
-                                    </td>
-                                    <td>Promnet</td>
-                                </tr>
+                                <?php while ($dataTugas = mysqli_fetch_assoc($ambil_tabel_tugas)) : ?>
+                                    <tr>
+                                        <td>
+                                            <a href="list-tugas-mhs.php?namaTugas=integrating API midtrans" class="text-decoration-none">
+                                                <?= $dataTugas["judul"] ?>
+                                            </a>
+                                        </td>
+                                        <td><?= $dataTugas["namaMK"] ?></td>
+                                    </tr>
+                                <?php endwhile ?>
                             </tbody>
                         </table>
 
@@ -126,12 +140,20 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <hr class="mt-2">
-                            <form action="" method="POST">
+                            <form action="" method="POST" enctype="multipart/form-data">
                                 <div class="container-fluid px-0 mb-5">
                                     <div class="row">
                                         <div class="mb-3">
-                                            <label for="nim" class="form-label">Judul</label>
-                                            <input required type="text" class="form-control" id="nim" name="nim">
+                                            <label for="mk" class="form-label">Mata Kuliah</label>
+                                            <select name="mk" id="mk" class="form-select">
+                                                <?php while ($dataMK = mysqli_fetch_assoc($ambil_tb_mk)) : ?>
+                                                    <option value="<?= $dataMK["idMK"] ?>"><?= $dataMK["namaMK"] ?></option>
+                                                <?php endwhile ?>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="judul" class="form-label">Judul</label>
+                                            <input required type="text" class="form-control" id="judul" name="judul">
                                         </div>
                                         <div class="mb-3">
                                             <label for="jurusan" class="form-label">Deskripsi</label>
@@ -139,11 +161,11 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="angkatan" class="form-label">File Tugas</label>
-                                            <input required type="file" class="form-control" id="inputFile" name="inputFile">
+                                            <input required type="file" class="form-control" id="inputFile" name="inputFile" required>
                                         </div>
                                     </div>
                                 </div>
-                                <button type="submit" class="btn btn-outline-dark mx-auto px-lg-3 mt-5" name="submit-mhs">Tambah</button>
+                                <button type="submit" class="btn btn-outline-dark mx-auto px-lg-3 mt-5" name="tambah-file">Tambah</button>
                             </form>
                         </div>
 

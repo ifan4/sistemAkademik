@@ -1,3 +1,67 @@
+<?php
+require "../koneksi.php";
+session_start();
+
+
+$_SESSION["dataMhs"]["idMhs"] = 2;
+//DEKLARASI ID MAHASISWA PADA TABEL MAHASISWA YANG DIDAPATKAN DARI SESSION SAAT LOGIN
+$idMhs = $_SESSION["dataMhs"]["idMhs"];
+
+
+//Deklarasi id pada tabel tugas yang didapatkan dari page link sebelumnya
+$idTugas = $_GET["idTugas"];
+
+
+$ambil_tb_tugas = mysqli_query($koneksi, "SELECT * FROM tugas WHERE idTugas = $idTugas");
+
+$dataTugas = mysqli_fetch_assoc($ambil_tb_tugas);
+
+
+if (isset($_POST["submit-tugas"])) {
+    $nilai = "";
+    $status = "Sudah Dikumpulkan";
+
+    $namaFile = $_FILES["inputUpload"]["name"];
+    move_uploaded_file($_FILES["inputUpload"]["tmp_name"], "files/" . $namaFile);
+
+    mysqli_query($koneksi, "INSERT INTO tugas_mhs VALUES ('', $idMhs, $idTugas, '$nilai', '$namaFile', '$status')");
+
+    if (mysqli_affected_rows($koneksi) > 0) {
+        echo "
+        <script>
+            alert('Tugas berhasil dikumpulkan!');
+        </script>
+        ";
+    }
+}
+
+//cek status mahasiswa sudah mengumpulkan atau belum
+function cekStatus()
+{
+    global $idMhs, $koneksi, $idTugas;
+    $ambil_tb_tugas_mhs = mysqli_query($koneksi, "SELECT * FROM tugas_mhs WHERE idMhs = $idMhs and idTugas = $idTugas");
+    if (mysqli_num_rows($ambil_tb_tugas_mhs) == 1) {
+        return true;
+    } else {
+        return false;
+    }
+}
+function getDataTugasMhs()
+{
+    global $idMhs, $idTugas, $koneksi;
+    $ambil_tb_tugas_mhs = mysqli_query($koneksi, "SELECT * FROM tugas_mhs WHERE idMhs = $idMhs and idTugas = $idTugas");
+    $tugas_mhs = mysqli_fetch_assoc($ambil_tb_tugas_mhs);
+
+    return $tugas_mhs;
+}
+
+
+
+
+
+require "../download-mhs.php";
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -95,6 +159,7 @@
         <!-- END OF SIDEBAR SECTION -->
 
         <div class="col-10 g-0">
+            <!-- header -->
             <div class="d-flex justify-content-between align-items-center py-3 pt-4 px-5 text-white" style="background-color: #1d2939ee;">
                 <h5>
                     <i class="bi bi-book-half me-2"></i>
@@ -128,6 +193,7 @@
                     </a>
                 </h6>
             </div>
+            <!-- end of header -->
 
             <div class="container text-secondary overflow-hidden">
                 <div class="row p-4 px-5">
@@ -137,46 +203,77 @@
                     <div class="col-12 bg-primary text-white g-0 bg-dark py-4 px-3">
                         <h6 class="text-white">
                             Tugas:
-                            Development css e-commerce
+                            <?= $dataTugas["judul"] ?>
                         </h6>
                     </div>
                     <div class="col-12 bg-white p-4">
-                        <table class="table table-striped">
-                            <tr>
-                                <td>Judul</td>
-                                <td>:</td>
-                                <td>lorem ipsum</td>
-                            </tr>
-                            <tr>
-                                <td>Deskripsi</td>
-                                <td>:</td>
-                                <td>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Odio aut quia sapiente blanditiis adipisci quasi enim et repellat magni temporibus, debitis facilis, aliquam est modi!</td>
-                            </tr>
-                            <tr>
-                                <td>File</td>
-                                <td>:</td>
-                                <td>lorem.pdf</td>
-                            </tr>
-                            <tr>
-                                <td>Upload Tugas</td>
-                                <td>:</td>
-                                <td>
-                                    <form action="">
-                                        <input type="file" name="inputUpload" id="inputUploadTugas">
-                                    </form>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Status</td>
-                                <td>:</td>
-                                <td class="text-danger">belum dikumpulkan</td>
-                            </tr>
-                            <tr>
-                                <td>Nilai</td>
-                                <td>:</td>
-                                <td></td>
-                            </tr>
-                        </table>
+                        <form action="" method="POST" enctype="multipart/form-data">
+                            <table class="table table-striped">
+                                <tr>
+                                    <td>Judul</td>
+                                    <td>:</td>
+                                    <td><?= $dataTugas["judul"] ?></td>
+                                </tr>
+                                <tr>
+                                    <td>Deskripsi</td>
+                                    <td>:</td>
+                                    <td><?= $dataTugas["desc"] ?></td>
+                                </tr>
+                                <tr>
+                                    <td>File</td>
+                                    <td>:</td>
+                                    <td>
+                                        <a href="../download-mhs.php?fileTugas=<?= $dataTugas["fileTugas"] ?>">
+                                            <?= $dataTugas["fileTugas"] ?>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <!-- the algorithm: 
+                                Jika ada id mahasiswa dan id tugas ini pada tabel tugas_mhs maka munculkan SUDAH DIKUMPULKAN -->
+                                    <td>Status</td>
+                                    <td>:</td>
+                                    <?php if (cekStatus()) : ?>
+                                        <td class="text-success">Sudah Dikumpulkan</td>
+
+                                    <?php else : ?>
+                                        <td class="text-danger">belum dikumpulkan</td>
+                                    <?php endif ?>
+                                </tr>
+                                <tr>
+                                    <!-- the algorithm: 
+                                Jika ada id mahasiswa dan id tugas ini pada tabel tugas_mhs DAN nilai != "" (kosong) maka munculkan nilainya  -->
+                                    <td>Nilai</td>
+                                    <td>:</td>
+                                    <?php if (!cekStatus()) : ?>
+                                        <td></td>
+                                    <?php else : ?>
+                                        <td class="fs-4"> <?= getDataTugasMhs()["nilai"] ?> </td>
+                                    <?php endif ?>
+                                </tr>
+
+                                <tr>
+                                    <td>Upload Tugas</td>
+                                    <td>:</td>
+                                    <td>
+                                        <?php if (!cekStatus()) : ?>
+                                            <input type="file" name="inputUpload" id="inputUploadTugas" required>
+                                        <?php else : ?>
+                                            <a href="../download-dosen.php?fileTugas=<?= getDataTugasMhs()["fileHasil"] ?>"> <?= getDataTugasMhs()["fileHasil"] ?> </a>
+                                        <?php endif ?>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="text-center">
+                                <!-- THE ALGORITHM:
+                                Jika ada id mahasiswa dan id tugas ini pada tabel tugas_mhs maka disable button submit -->
+                                <?php if (!cekStatus()) : ?>
+                                    <button type="submit" class="btn btn-success w-100" name="submit-tugas">Submit Tugas</button>
+                                <?php else : ?>
+                                    <button type="submit" class="btn btn-success w-100" name="submit-tugas" disabled>Submit Tugas</button>
+                                <?php endif ?>
+                            </div>
+                        </form>
                     </div>
 
                 </div>
