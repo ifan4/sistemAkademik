@@ -1,3 +1,16 @@
+<?php
+require "../koneksi.php";
+session_start();
+
+
+if (!isset($_SESSION["loginDosen"])) {
+    header("location: ../index.php");
+    exit;
+}
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -47,8 +60,13 @@
                     Home
                 </h5>
 
+                <h6 class="rounded-3 p-2 ">
+                    <?= $_SESSION["dataDosen"]["namaDosen"] ?>
+                    <i class=" fs-3 ms-1 bi bi-person-circle align-middle"></i>
+                </h6>
+
                 <h6 class="bg-danger rounded-3 p-2">
-                    <a href="#" class="text-decoration-none link-light">
+                    <a href="../logout.php" class="text-decoration-none link-light">
                         <i class="me-2 bi bi-box-arrow-left"></i>
                         Log Out
                     </a>
