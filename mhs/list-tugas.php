@@ -1,11 +1,17 @@
 <?php
 require "../koneksi.php";
+session_start();
 
+if (!$_SESSION["loginMhs"]) {
+    header("location: ../index.php");
+    exit;
+}
 $idMK = $_GET["idMK"];
-
+$idMhs = $_SESSION["dataMhs"]["idMhs"];
 
 $ambil_tb_tugas = mysqli_query($koneksi, "SELECT * FROM tugas, matakuliah WHERE tugas.idMK = matakuliah.idMK and tugas.idMK = $idMK");
-
+$ambil_tb_pengumuman_mhs = mysqli_query($koneksi, "SELECT * FROM pemberitahuan_mhs WHERE idMhs = $idMhs ORDER BY id_pem_mhs DESC");
+$totNotif = mysqli_num_rows($ambil_tb_pengumuman_mhs);
 ?>
 
 <!DOCTYPE html>
@@ -110,30 +116,41 @@ $ambil_tb_tugas = mysqli_query($koneksi, "SELECT * FROM tugas, matakuliah WHERE 
                 <h5>
                     <i class="bi bi-book-half me-2"></i>
                     Pembelajaran
-                    <div class="dropdown d-inline-block ">
-                        <a href="#" data-bs-toggle="dropdown">
-                            <i class="bi bi-bell-fill text-white position-relative ms-2">
-                                <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-2 border-light rounded-circle"> </span>
-                            </i>
-                        </a>
-                        <ul class="dropdown-menu notif" aria-labelledby="dropdownMenuLink">
-                            <li class="text-center fw-bold">Pemberitahuan</li>
-                            <hr>
-                            <li><a class="dropdown-item text-wrap border-bottom p-2" href="#">
-                                    <h6>Title</h6>
-                                    <p class="">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolorum illo fugit, quam perspiciatis blanditiis nulla delectus eius reiciendis dolor porro.</p>
-                                </a>
-                            </li>
-                            <li><a class="dropdown-item text-wrap border-bottom p-2" href="#">
-                                    <h6>Title</h6>
-                                    <p class="">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolorum illo fugit, quam perspiciatis blanditiis nulla delectus eius reiciendis dolor porro.</p>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
                 </h5>
+                <div class="dropdown d-inline-block ">
+                    <a href="#" data-bs-toggle="dropdown">
+                        <i class="fs-4 bi bi-bell-fill text-white position-relative ms-2">
+                            <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-1 border-light rounded-circle" style="font-size: 12px;"> <?= $totNotif ?> </span>
+                        </i>
+                    </a>
+                    <ul class="dropdown-menu notif overflow-auto" aria-labelledby="dropdownMenuLink" style="max-height: 400px;">
+                        <div class="d-flex justify-content-around">
+                            <li class="text-center fw-bold">Pemberitahuan</li>
+                            <a href="../tandaiSudahDibaca.php?idMhs=<?= $idMhs ?>" class="text-decoration-none">tandai sudah dibaca</a>
+
+                        </div>
+                        <hr>
+                        <?php
+                        while ($dataPengumumanMhs = mysqli_fetch_assoc($ambil_tb_pengumuman_mhs)) :
+                        ?>
+                            <li><a class="dropdown-item text-wrap border-bottom p-2" href="#">
+                                    <h6><?= $dataPengumumanMhs["judul_pem_mhs"] ?></h6>
+                                    <p class=""><?= $dataPengumumanMhs["desc_pem_mhs"] ?></p>
+                                </a>
+                            </li>
+                        <?php endwhile ?>
+                    </ul>
+                </div>
+
+
+                <h6 class="rounded-3 p-2 ">
+                    <?= $_SESSION["dataMhs"]["nama"] ?>
+                    <i class=" fs-3 ms-1 bi bi-person-circle align-middle"></i>
+
+                </h6>
+
                 <h6 class="bg-danger rounded-3 p-2">
-                    <a href="#" class="text-decoration-none link-light">
+                    <a href="../logout.php" class="text-decoration-none link-light">
                         <i class="me-2 bi bi-box-arrow-left"></i>
                         Log Out
                     </a>

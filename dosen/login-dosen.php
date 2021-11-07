@@ -1,3 +1,30 @@
+<?php
+require "../koneksi.php";
+session_start();
+
+if (isset($_SESSION["loginDosen"])) {
+    header("location: index.php");
+    exit;
+}
+
+if (isset($_POST["submit"])) {
+    $nip = $_POST["nip"];
+    $password = $_POST["password"];
+
+    $ambil_data_dosen = mysqli_query($koneksi, "SELECT * FROM dosen WHERE nip = $nip and password = $password");
+    $dataDosen = mysqli_fetch_assoc($ambil_data_dosen);
+    if (mysqli_affected_rows($koneksi) ==  1) {
+
+        $_SESSION["loginDosen"] = true;
+        $_SESSION["dataDosen"] = $dataDosen;
+
+        header("location: index.php");
+        exit;
+    }
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -21,7 +48,7 @@
             <div class="col-5">
                 <div class="bg-white rounded-3 p shadow rounded-3">
                     <h3 class="text-white text-center bg-success p-3">Login Dosen</h3>
-                    <form class="p-5">
+                    <form class="p-5" method="POST" action="">
                         <div class="mb-3">
                             <label for="nip" class="form-label">NIP</label>
                             <input type="text" class="form-control" id="nip" name="nip">

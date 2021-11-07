@@ -1,5 +1,45 @@
 <?php
+require "../koneksi.php";
+session_start();
 
+
+if (!isset($_SESSION["loginDosen"])) {
+    header("location: ../index.php");
+    exit;
+}
+
+$idTugas = $_GET["idTugas"];
+
+
+$ambil_tb_tugas = mysqli_query($koneksi, "SELECT * FROM tugas_mhs, mahasiswa WHERE tugas_mhs.idTugas =  $idTugas and tugas_mhs.idMhs = mahasiswa.idMhs");
+
+
+
+if (isset($_POST["submit-nilai"])) {
+    $idTugas_mhs = $_POST["idTugas_mhs"];
+    $nilai = $_POST["nilai"];
+
+    mysqli_query($koneksi, "UPDATE tugas_mhs SET nilai = '$nilai' where idTugas_mhs = $idTugas_mhs");
+
+    if (mysqli_affected_rows($koneksi) > 0) {
+
+        require "../notif.php";
+        $ambil_data_tugas_mhs = mysqli_query($koneksi, "SELECT * FROM tugas_mhs WHERE idTugas_mhs = $idTugas_mhs");
+        $data_tugas_mhs = mysqli_fetch_assoc($ambil_data_tugas_mhs);
+        $idMhs = $data_tugas_mhs["idMhs"];
+        if (notifScoreSubmitted($idMhs, $_POST["fileHasil"]) <= 0) {
+            echo "<script> alert('Gagal input pengumuman!') </script>";
+        }
+
+
+        header("Refresh:0");
+        echo "
+            <script>
+                alert('Nilai Berhasil Ditambahkan!');
+            </script>
+            ";
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -50,8 +90,13 @@
                     Input Tugas
                 </h5>
 
+                <h6 class="rounded-3 p-2 ">
+                    <?= $_SESSION["dataDosen"]["namaDosen"] ?>
+                    <i class=" fs-3 ms-1 bi bi-person-circle align-middle"></i>
+                </h6>
+
                 <h6 class="bg-danger rounded-3 p-2">
-                    <a href="#" class="text-decoration-none link-light">
+                    <a href="../logout.php" class="text-decoration-none link-light">
                         <i class="me-2 bi bi-box-arrow-left"></i>
                         Log Out
                     </a>
@@ -63,7 +108,10 @@
                 <div class="container col-10 mb-3">
                     <div class="kotak bg-white p-4">
 
-                        <h4>List Tugas Mahasiswa</h4>
+                        <h4>
+                            List Tugas Mahasiswa:
+                            <?= $_GET["judulTugas"] ?>
+                        </h4>
 
                         <hr>
 
@@ -73,21 +121,53 @@
                                     <th scope="col">No</th>
                                     <th scope="col">Nama</th>
                                     <th scope="col">NIM</th>
-                                    <th scope="col">Judul</th>
                                     <th scope="col">File</th>
                                     <th scope="col">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Nadia</td>
-                                    <td>1905044</td>
-                                    <td>Development Style E-commerce</td>
-                                    <td>initugas.pdf</td>
-                                    <td>
-                                        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modal-beri-nilai">Beri Nilai</button>
-                                    </td>
+                                <?php
+                                $nomor = 1;
+                                while ($data_tgs_mhs = mysqli_fetch_assoc($ambil_tb_tugas)) : ?>
+                                    <tr>
+                                        <td><?= $nomor++ ?></td>
+                                        <td><?= $data_tgs_mhs["nama"] ?></td>
+                                        <td><?= $data_tgs_mhs["nim"] ?></td>
+                                        <td><?= $data_tgs_mhs["fileHasil"] ?></td>
+                                        <td>
+                                            <button onclick="kirimId(<?= $data_tgs_mhs['idTugas_mhs'] ?>,  '<?= $data_tgs_mhs['nama'] ?>', '<?= $data_tgs_mhs['nim'] ?>', '<?= $data_tgs_mhs['fileHasil'] ?>', '<?= $data_tgs_mhs['nilai'] ?>')" id="btn-nilai" type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modal-beri-nilai" idTugas_mhs="<?= $data_tgs_mhs["idTugas_mhs"] ?>">Beri Nilai</button>
+                                        </td>
+                                    </tr>
+                                <?php endwhile ?>
+                                <script>
+                                    function kirimId(id, nama, nim, fileHasil, nilai) {
+
+                                        console.log("test");
+                                        let btn_nilai = document.getElementById("btn-nilai");
+                                        let inputID = document.getElementById("inputID");
+                                        let inputNama = document.getElementById("inputNama");
+                                        let inputNim = document.getElementById("inputNim");
+                                        let linkFileHasil = document.getElementById("linkFileHasil");
+                                        let inputFileHasil = document.getElementById("inputFileHasil");
+                                        let status = document.getElementById("status");
+                                        let nilaiOption = document.getElementById("option-default");
+
+                                        inputID.value = id;
+                                        inputNama.value = nama;
+                                        inputNim.value = nim;
+                                        linkFileHasil.innerText = fileHasil;
+                                        linkFileHasil.href = "../download-dosen.php?fileTugas=" + fileHasil;
+                                        inputFileHasil.value = fileHasil;
+
+
+                                        if (nilai != "") {
+                                            nilaiOption.innerHTML = nilai;
+                                            status.value = "Sudah Dinilai";
+                                            status.style = "background-color: green;";
+                                        }
+
+                                    }
+                                </script>
 
                             </tbody>
                         </table>
@@ -99,6 +179,8 @@
 
             <!-- Modal Tambah Tugas -->
             <div class="modal fade" id="modal-beri-nilai" tabindex="-1" aria-labelledby="modal-beri-nilai" aria-hidden="true">
+
+                ?>
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-body py-4">
@@ -110,38 +192,36 @@
                             <form action="" method="POST">
                                 <div class="container-fluid px-0">
                                     <div class="row">
+                                        <input type="hidden" id="inputID" name="idTugas_mhs">
                                         <div class="mb-3">
                                             <label for="nama" class="form-label">Nama</label>
-                                            <input required type="text" class="form-control" id="nama" name="nama" value="Nadia" disabled>
+                                            <input required type="text" class="form-control" id="inputNama" name="nama" disabled>
                                         </div>
                                         <div class="mb-3">
                                             <label for="nim" class="form-label">NIM</label>
-                                            <input required type="text" class="form-control" id="nim" name="nim" value="1905044" disabled>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="judul" class="form-label">Judul</label>
-                                            <input required type="text" class="form-control" id="judul" name="judul" value="judul" disabled>
+                                            <input required type="text" class="form-control" id="inputNim" name="nim" disabled>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">File Hasil</label>
-                                            <a href="#" class="btn btn-primary d-block"> initugas.pdf </a>
+                                            <a href="#" class="btn btn-primary d-block" id="linkFileHasil"> </a>
+                                            <input type="hidden" name="fileHasil" id="inputFileHasil">
                                         </div>
                                         <div class="mb-3">
                                             <label for="nilai" class="form-label">Nilai</label>
                                             <select name="nilai" id="nilai" class="form-select">
-                                                <option value="">A</option>
-                                                <option value="">A-</option>
-                                                <option value="">B+</option>
-                                                <option value="">B</option>
-                                                <option value="">B-</option>
-                                                <option value="">C</option>
-                                                <option value="">D</option>
-                                                <option value="">E</option>
+                                                <option id="option-default" selected hidden>Pilih Nilai disini</option>
+                                                <option>A-</option>
+                                                <option>B+</option>
+                                                <option>B</option>
+                                                <option>B-</option>
+                                                <option>C</option>
+                                                <option>D</option>
+                                                <option>E</option>
                                             </select>
                                         </div>
                                         <div class="mb-3">
                                             <label for="judul" class="form-label">Status</label>
-                                            <input required type="text" class="form-control" id="status" name="status" value="belum dinilai" disabled>
+                                            <input required type="text" class="form-control text-white" id="status" name="status" value="belum dinilai" style="background-color: red;" disabled>
                                         </div>
                                         <button type="submit" class="btn btn-outline-success px-lg-3 w-100 mt-4" name="submit-nilai">submit</button>
                                     </div>
@@ -162,8 +242,6 @@
     </div>
 
 
-
-    <script src="../script/script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </body>
 

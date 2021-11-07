@@ -1,3 +1,28 @@
+<?php
+require "../koneksi.php";
+session_start();
+
+if (isset($_SESSION["loginAdmin"])) {
+    header("location: index.php");
+    exit;
+}
+
+if (isset($_POST["submit"])) {
+    $username = $_POST["username"];
+    $password = $_POST["password"];
+
+    $ambil_data_dosen = mysqli_query($koneksi, "SELECT * FROM admin WHERE username = '$username' and password = $password");
+    $dataAdmin = mysqli_fetch_assoc($ambil_data_dosen);
+    if (mysqli_affected_rows($koneksi) ==  1) {
+        $_SESSION["loginAdmin"] = true;
+        $_SESSION["dataAdmin"] = $dataAdmin;
+
+        header("location: index.php");
+        exit;
+    }
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -21,7 +46,7 @@
             <div class="col-5">
                 <div class="bg-white rounded-3 p shadow rounded-3">
                     <h3 class="text-white text-center bg-success p-3">Login Admin</h3>
-                    <form class="p-5">
+                    <form class="p-5" method="POST">
                         <div class="mb-3">
                             <label for="username" class="form-label">Username</label>
                             <input type="text" class="form-control" name="username" id="username">

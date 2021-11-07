@@ -1,3 +1,35 @@
+<?php
+require "../koneksi.php";
+session_start();
+
+
+if (!isset($_SESSION["loginAdmin"])) {
+    header("location: ../index.php");
+    exit;
+}
+
+$ambil_tb_pengumuman_general = mysqli_query($koneksi, "SELECT * FROM pemberitahuan ORDER BY id DESC");
+
+
+if (isset($_POST["submit"])) {
+
+    require "../notif.php";
+    $judul = $_POST["judul"];
+    $isi = $_POST["isi"];
+    $waktu = getWaktu("date");
+
+    mysqli_query($koneksi, "INSERT INTO pemberitahuan VALUES ('', '$waktu', '$judul', '$isi')");
+
+    if (mysqli_affected_rows($koneksi) > 0) {
+        echo "<script> alert('Berhasil input pengumuman ke seluruh mahasiswa!') </script>";
+    }
+
+
+    if (notifToAllMhs($judul, $isi) <= 0) {
+        echo "<script> alert('Gagal input pengumuman ke seluruh mahasiswa!') </script>";
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -48,7 +80,7 @@
                 </h5>
 
                 <h6 class="bg-danger rounded-3 p-2">
-                    <a href="#" class="text-decoration-none link-light">
+                    <a href="../logout.php" class="text-decoration-none link-light">
                         <i class="me-2 bi bi-box-arrow-left"></i>
                         Log Out
                     </a>
@@ -70,28 +102,25 @@
 
                         <table class="table">
                             <thead>
+
                                 <tr>
+                                    <th scope="col">No</th>
                                     <th scope="col">Judul</th>
                                     <th scope="col">Isi Pengumuman</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Tugas integrating API midtrans</td>
-                                    <td>Promnet</td>
-                                </tr>
-                                <tr>
-                                    <td>Tugas integrating API midtrans</td>
-                                    <td>Promnet</td>
-                                </tr>
-                                <tr>
-                                    <td>Tugas integrating API midtrans</td>
-                                    <td>Promnet</td>
-                                </tr>
-                                <tr>
-                                    <td>Tugas integrating API midtrans</td>
-                                    <td>Promnet</td>
-                                </tr>
+                                <?php
+                                $nomor = 1;
+                                while ($dataPengumuman = mysqli_fetch_assoc($ambil_tb_pengumuman_general)) :
+                                ?>
+                                    <tr>
+                                        <td><?= $nomor++ ?></td>
+                                        <td><?= $dataPengumuman["judul"] ?></td>
+                                        <td><?= $dataPengumuman["isi"] ?></td>
+                                    </tr>
+                                <?php endwhile ?>
+
                             </tbody>
                         </table>
 
@@ -115,7 +144,7 @@
                                     <div class="row">
                                         <div class="mb-3">
                                             <label for="nim" class="form-label">Judul</label>
-                                            <input required type="text" class="form-control" id="nim" name="nim">
+                                            <input required type="text" class="form-control" id="nim" name="judul">
                                         </div>
                                         <div class="mb-3">
                                             <label for="isi" class="form-label">Isi Pengumuman</label>
@@ -123,7 +152,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button type="submit" class="btn btn-outline-dark mx-auto px-lg-3 mt-5" name="submit-pengumuman">Tambah</button>
+                                <button type="submit" class="btn btn-outline-dark mx-auto px-lg-3 mt-5" name="submit">Tambah</button>
                             </form>
                         </div>
 

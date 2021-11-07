@@ -2,7 +2,13 @@
 require "../koneksi.php";
 session_start();
 
-$_SESSION["dataDosen"]["idDosen"] = 2;
+
+if (!isset($_SESSION["loginDosen"])) {
+    header("location: ../index.php");
+    exit;
+}
+
+
 $idDosen = $_SESSION["dataDosen"]["idDosen"];
 
 //ambil data tabel mata kuliah yang diampu oleh dosen ini
@@ -24,6 +30,15 @@ if (isset($_POST["tambah-file"])) {
                 alert('Tugas Berhasil Ditambahkan!');
             </script>
         ";
+        require "../notif.php";
+        $ambil_tb_mk = mysqli_query($koneksi, "SELECT * FROM matakuliah WHERE idMK = $idMK");
+        $dataMK = mysqli_fetch_assoc($ambil_tb_mk);
+        $namaMK = $dataMK["namaMK"];
+        if (notifToAllMhs("Tugas Baru $namaMK", "Tugas: $judul") <= 0) {
+            echo "<script> alert('Gagal input notifikasi tugas!') </script>";
+        }
+
+        header("Refresh:0");
     }
 }
 
@@ -82,8 +97,13 @@ if (isset($_POST["tambah-file"])) {
                     Input Tugas
                 </h5>
 
+                <h6 class="rounded-3 p-2 ">
+                    <?= $_SESSION["dataDosen"]["namaDosen"] ?>
+                    <i class=" fs-3 ms-1 bi bi-person-circle align-middle"></i>
+                </h6>
+
                 <h6 class="bg-danger rounded-3 p-2">
-                    <a href="#" class="text-decoration-none link-light">
+                    <a href="../logout.php" class="text-decoration-none link-light">
                         <i class="me-2 bi bi-box-arrow-left"></i>
                         Log Out
                     </a>
@@ -115,7 +135,7 @@ if (isset($_POST["tambah-file"])) {
                                 <?php while ($dataTugas = mysqli_fetch_assoc($ambil_tabel_tugas)) : ?>
                                     <tr>
                                         <td>
-                                            <a href="list-tugas-mhs.php?namaTugas=integrating API midtrans" class="text-decoration-none">
+                                            <a href="list-tugas-mhs.php?idTugas=<?= $dataTugas["idTugas"] ?>&judulTugas=<?= $dataTugas['judul'] ?>" class="text-decoration-none">
                                                 <?= $dataTugas["judul"] ?>
                                             </a>
                                         </td>
